@@ -12,12 +12,7 @@ manager = Manager(app)
 # 将迁移脚本添加到脚本管理器
 manager.add_command('db',MigrateCommand)
 
-@app.route('/',methods=['GET','POST'])
-def index():
-
-
-    return "index"
-
 if __name__ == "__main__":
+    print app.url_map
     manager.run()
 
