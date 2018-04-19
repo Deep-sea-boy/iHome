@@ -2,11 +2,13 @@
 
 from flask import make_response,request,abort,jsonify
 
-from iHome import redis_store
+from iHome import redis_store,constants
 from iHome.utils.captcha.captcha import captcha
 from iHome.utils.response_code import RET
 from . import api
 
+
+last_uuid = ''
 
 @api.route('/image_code',methods=["GET"])
 def get_image_code():
@@ -29,9 +31,14 @@ def get_image_code():
 
     # 3.使用redis数据库缓存图片验证码，uuid作为key
     try:
-        redis_store.set('ImageCode:%s' %uuid,text)
+        if last_uuid:
+            redis_store.delete('ImageCode:%s' %last_uuid)
+        redis_store.set('ImageCode:%s' %uuid,text,constants.IMAGE_CODE_REDIS_EXPIRES)
     except Exception as e:
         return jsonify(errno=RET.DBERR,errmsg=u'保存验证码失败')
+
+    global last_uuid
+    last_uuid = uuid
 
     # 4.响应图片验证码
     response = make_response(image)
