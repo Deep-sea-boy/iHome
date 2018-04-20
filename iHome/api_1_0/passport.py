@@ -55,7 +55,7 @@ def register():
     user.mobile = mobile
     user.name = mobile # 默认把手机号作为用户名，如果不喜欢，后面会提供修改用户名的接口
     # 需要将密码加密后保存到数据库:调用password属性的setter方法
-    user.password_hash = password
+    user.password = password
 
     #6.将模型属性写入到数据库
     try:
