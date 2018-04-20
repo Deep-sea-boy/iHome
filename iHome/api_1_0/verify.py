@@ -12,6 +12,7 @@ from iHome.utils.response_code import RET
 from iHome.utils.sms import CCP
 from . import api
 
+
 @api.route('/sms_code',methods=["POST"])
 def send_sms_code():
     """发送短信验证码
@@ -47,15 +48,16 @@ def send_sms_code():
         return jsonify(errno=RET.NODATA, errmsg='状态码不存在')
 
     #4.跟客户端传入的验证码进行对比
-    if imageCode_client != imageCode_server:
+    if imageCode_client.lower() != imageCode_server.lower():
         return jsonify(errno=RET.PARAMERR, errmsg='验证码输入有误')
 
     #5.如果对比成功就生成短信验证码
     sms_code = '%06d'%random.randint(0,999999)
-    current_app.looger.debug(sms_code)
+    current_app.logger.debug(sms_code)
 
     #6.调用单例类发送短信
     result = CCP().send_sms_code(mobile,[sms_code,constants.SMS_CODE_REDIS_EXPIRES/60],'1')
+    print result
     if result != 1:
         return jsonify(errno=RET.THIRDERR,errmsg='发送短信验证码失败')
 
