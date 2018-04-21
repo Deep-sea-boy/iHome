@@ -10,7 +10,7 @@ from iHome.utils.response_code import RET
 from . import api
 
 
-@api.route('/users/name')
+@api.route('/users/name',methods=["PUT"])
 def set_user_name():
     """修改用户名
         0.TODO 判断用户是否登录
