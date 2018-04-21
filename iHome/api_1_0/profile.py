@@ -11,7 +11,7 @@ from . import api
 
 
 
-@api.route('/users/avatar')
+@api.route('/users/avatar',methods=["POST"])
 def upload_avatar():
     """上传用户头像
     0.TODO 判断用户是否登录
@@ -30,6 +30,7 @@ def upload_avatar():
         return jsonify(errno=RET.PARAMERR, errmsg='获取用户头像失败')
     # 2.查询当前的登录用户
     user_id = session['user_id']
+    print user_id,'userid*********************'
     try:
         user = User.query.get(user_id)
     except Exception as e:
@@ -37,6 +38,7 @@ def upload_avatar():
         return jsonify(errno=RET.DBERR, errmsg='查询用户数据失败')
     if not user:
         return jsonify(errno=RET.PARAMERR, errmsg='用户不存在')
+    print user,'use**********'
     # 3.调用上传工具方法实现用户头像的上传
     try:
         key = upload_image(avatar_data)
