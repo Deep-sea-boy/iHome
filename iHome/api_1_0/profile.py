@@ -10,13 +10,13 @@ from . import api
 
 @api.route('/users',methods=["GET"])
 def get_user_info():
-    """提供实名认证数据
-        0.判断用户是否登录
-        1.查询当前登录用户user信息
-        2.构造响应的实名认证的数据
-        3.响应实名认证的数据
-        4.响应个人信息的结果
-        """
+    """提供个人信息
+    0.TODO 判断用户是否登录
+    1.从session中获取当前登录用户的user_id
+    2.查询当前登录用户的user信息
+    3.构造个人信息的响应数据
+    4.响应个人信息的结果
+    """
 
     # 1.查询当前登录用户user信息
     user_id = session['user_id']
@@ -30,11 +30,6 @@ def get_user_info():
         return jsonify(errno=RET.NODATA, errmsg='用户不存在')
 
     # 3.构造个人信息的响应数据：思考响应哪些数据给用户
-    response_info_dict = {
-        'user_id':user.id,
-        'avatar_url':user.avatar_url,
-        'name':user.name,
-        'mobile':user.mobile
-    }
+    response_info_dict = user.to_dict()
 
     return jsonify(errno=RET.OK, errmsg='OK', data=response_info_dict)
