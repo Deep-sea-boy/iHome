@@ -10,6 +10,32 @@ from iHome.utils.image_storge import upload_image
 from iHome.utils.response_code import RET
 from . import api
 
+@api.route('/users/auth',methods=["GET"])
+@login_required
+def get_user_auth():
+    """提供实名认证数据
+        0.判断用户是否登录
+        1.查询当前登录用户user信息
+        2.构造响应的实名认证的数据
+        3.响应实名认证的数据
+    """
+    #1.查询当前登录用户user信息
+    user_id = g.user_id
+    try:
+        user = User.query.get(user_id)
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify(errno=RET.DBERR, errmsg='查询用户数据失败')
+    if not user:
+        return jsonify(errno=RET.PARAMERR, errmsg='用户不存在')
+
+    #2.构造响应的实名认证的数据
+    response_auth_dict = user.auth_to_dict()
+
+    #3.响应实名认证的数据
+    return jsonify(errno=RET.OK, errmsg='OK', data=response_auth_dict)
+
+
 @api.route('/users/auth',methods=["POST"])
 @login_required
 def set_user_auth():
