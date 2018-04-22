@@ -1,16 +1,17 @@
 #coding:utf-8
 #个人中心
 
-from flask import session,current_app,jsonify,request
+from flask import current_app,jsonify,request,g
 
 from iHome import db,constants
 from iHome.models import User
+from iHome.utils.commom import login_required
 from iHome.utils.image_storge import upload_image
 from iHome.utils.response_code import RET
 from . import api
 
-
 @api.route('/users/name',methods=["PUT"])
+@login_required
 def set_user_name():
     """修改用户名
         0.TODO 判断用户是否登录
@@ -26,7 +27,8 @@ def set_user_name():
         return jsonify(errno=RET.PARAMERR, errmsg='缺少必传参数')
 
     # 2.查询当前的登录用户
-    user_id = session['user_id']
+    # user_id = session['user_id']
+    user_id = g.user_id
     try:
         user = User.query.get(user_id)
     except Exception as e:
@@ -51,6 +53,7 @@ def set_user_name():
 
 
 @api.route('/users/avatar',methods=["POST"])
+@login_required
 def upload_avatar():
     """上传用户头像
     0.TODO 判断用户是否登录
@@ -68,7 +71,8 @@ def upload_avatar():
         current_app.logger.error(e)
         return jsonify(errno=RET.PARAMERR, errmsg='获取用户头像失败')
     # 2.查询当前的登录用户
-    user_id = session['user_id']
+    # user_id = session['user_id']
+    user_id = g.user_id
     try:
         user = User.query.get(user_id)
     except Exception as e:
@@ -100,6 +104,7 @@ def upload_avatar():
 
 
 @api.route('/users',methods=["GET"])
+@login_required
 def get_user_info():
     """提供个人信息
     0.TODO 判断用户是否登录
@@ -110,7 +115,9 @@ def get_user_info():
     """
 
     # 1.查询当前登录用户user信息
-    user_id = session['user_id']
+    # user_id = session['user_id']
+    user_id = g.user_id
+
     # 2.查询当前登录用户的user信息
     try:
         user = User.query.get(user_id)
