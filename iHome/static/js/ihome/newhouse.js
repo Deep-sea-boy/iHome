@@ -35,7 +35,7 @@ $(document).ready(function(){
         // 收集$(this)表单中的带有name的input标签数据，生成字典对象，封装到数组中
         // obj是一个对象：  {name:'title',value:'1'}...
         $(this).serializeArray().map(function (obj) {
-            params[obj.name] = obj.val();
+            params[obj.name] = obj.value;
         });
 
         facilities = [];
