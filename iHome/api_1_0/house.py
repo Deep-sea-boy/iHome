@@ -51,6 +51,10 @@ def upload_house_image():
     house_image = HouseImage()
     house_image.house_id = house_id
     house_image.url = key
+
+    # 给房屋设置默认的图片
+    if not house.index_image_url:
+        house.index_image_url = key
     try:
         db.session.add(house_image)
         db.session.commit()
